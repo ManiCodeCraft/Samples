@@ -1,21 +1,28 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_app/HomeScreen.dart';
-import 'package:flutter_app/register_user.dart';
+import 'package:flutter_app/constants.dart';
+import 'package:flutter_app/dashboard.dart';
+import 'package:flutter_app/registration/register_user.dart';
+import 'package:flutter_app/save_pdf/save_pdf_data.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  return runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Register user',
+      title: 'Mercury Sample',
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: RegisterUser(),
+      initialRoute: Constants.HOME_ROUTE,
+      routes: {
+        Constants.HOME_ROUTE: (context) => DashboardScreen(),
+        Constants.REGISTER_USER_ROUTE: (context) => RegisterUser(),
+        Constants.SAVE_PDF_ROUTE: (context) => SaveDataScreen(),
+      },
     );
   }
 }

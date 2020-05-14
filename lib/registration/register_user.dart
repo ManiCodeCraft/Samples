@@ -28,85 +28,89 @@ class _RegisterUserState extends State<RegisterUser> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        resizeToAvoidBottomInset: false,
+       // resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(Strings.REGISTER_USER),
+        ),
         body: Container(
           padding: EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                _getPolicyNumberField(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _getPolicyNumberField(
+                    (String value) {
+                      formData[Constants.ARG_POLICY_NUMBER] = value;
+                    },
+                  ),
+                  _getFormInputField(
+                    Strings.FIRST_NAME,
+                    (String value) {
+                      formData[Constants.ARG_FIRST_NAME] = value;
+                    },
+                    (value) {
+                      return value.isEmpty ? Strings.ERR_FIRST_NAME : null;
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: _getFormInputField(
+                      Strings.LAST_NAME,
                       (String value) {
-                    formData[Constants.ARG_POLICY_NUMBER] = value;
-                  },
-                ),
-                _getFormInputField(
-                  Strings.FIRST_NAME,
-                      (String value) {
-                    formData[Constants.ARG_FIRST_NAME] = value;
-                  },
+                        formData[Constants.ARG_LAST_NAME] = value;
+                      },
                       (value) {
-                    return value.isEmpty ? Strings.ERR_FIRST_NAME : null;
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: _getFormInputField(
-                    Strings.LAST_NAME,
-                        (String value) {
-                      formData[Constants.ARG_LAST_NAME] = value;
-                    },
-                        (value) {
-                      return value.isEmpty ? Strings.ERR_LAST_NAME : null;
-                    },
+                        return value.isEmpty ? Strings.ERR_LAST_NAME : null;
+                      },
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: _getFormInputField(
-                    Strings.ZIP_CODE,
-                        (String value) {
-                      formData[Constants.ARG_ZIP_CODE] = value;
-                    },
-                        (value) {
-                      return value.isEmpty ? Strings.ERR_ZIP : null;
-                    },
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: _getFormInputField(
+                      Strings.ZIP_CODE,
+                      (String value) {
+                        formData[Constants.ARG_ZIP_CODE] = value;
+                      },
+                      (value) {
+                        return value.isEmpty ? Strings.ERR_ZIP : null;
+                      },
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  child: _getFormInputField(
-                    Strings.EMAIL,
-                        (String value) {
-                      formData[Constants.ARG_EMAIL] = value;
-                    },
-                        (value) {
-                      if (value.isEmpty) {
-                        return Strings.EMPTY_EMAIL;
-                      } else {
-                        if (!EmailValidator.validate(value)) {
-                          return Strings.ERR_EMAIL;
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: _getFormInputField(
+                      Strings.EMAIL,
+                      (String value) {
+                        formData[Constants.ARG_EMAIL] = value;
+                      },
+                      (value) {
+                        if (value.isEmpty) {
+                          return Strings.EMPTY_EMAIL;
+                        } else {
+                          if (!EmailValidator.validate(value)) {
+                            return Strings.ERR_EMAIL;
+                          }
+                          return null;
                         }
-                        return null;
+                      },
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                  ),
+                  _getDateOfBirthField(),
+                  RaisedButton(
+                    child: Text(Strings.REGISTER),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        _formKey.currentState.save();
+                        Navigator.pop(context);
                       }
                     },
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                ),
-                _getDateOfBirthField(),
-                RaisedButton(
-                  child: Text(Strings.REGISTER),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
-                      _scaffoldKey.currentState.showSnackBar(
-                          SnackBar(content: Text("Registered Successfully"),));
-                    }
-                  },
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ));
@@ -132,8 +136,8 @@ class _RegisterUserState extends State<RegisterUser> {
     }
   }
 
-  TextFormField _getFormInputField(String label, onSaveForm onSaved,
-      onValidateForm onValidate,
+  TextFormField _getFormInputField(
+      String label, onSaveForm onSaved, onValidateForm onValidate,
       {TextInputType keyboardType = TextInputType.text}) {
     return TextFormField(
       decoration: InputDecoration(
@@ -198,9 +202,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 state.errorText ?? '',
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                  color: Theme
-                      .of(context)
-                      .errorColor,
+                  color: Theme.of(context).errorColor,
                   fontSize: 12,
                 ),
               ),

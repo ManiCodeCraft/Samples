@@ -1,0 +1,102 @@
+1)tell me about your self
+
+2)ADb command to uninstall application
+
+3)how effective is automation in agile world, take us through the entire process
+
+4)which of the lifecycle apporch you use to develop a software. 
+
+5)which all programming languages you are familar with
+
+6)Appart from mob application, what other application you have automated
+
+7)can you pls explain your automation and tell us which wframework you have used
+
+8)given a chance now would you change any of it.
+
+9)is it possible to share screen and write us a sample of your framework.
+
+10)can you pls tell ,me any three testng listners?
+
+11)does your framewrok support running script in parallel?
+
+12)how do you idetentify which cases are automated / How do you wirte automation cases
+
+13)give me any 5 eg for non function testcase for mob application
+
+14)how do you decide which OS device or browser to use while automation?
+
+15)can you pls write an sample testng.xml file
+
+16) what is your expirience in CI? which tool have you used before
+
+17) what are the challeges you faced while automating ios application
+
+18)ehat are the different testng annotations
+
+19)what are generic in java
+
+20)what is depedency manager? which have you used?
+
+21)write a code to take a screenshot of device
+
+22)how to do handle flaky testcase
+
+23)appart from testng anyother reporting you have used before?
+
+24)Name different exception you get during automation web applications
+
+25)what is difference between overloading and overriding
+
+26)what is the purpose of BDD in real world.
+
+27)lets say you have an ios application which has an hyperlink, Which on click of it opens safari browser. 
+How will you assert if the browser has opened in foreground
+
+28)Name a Jenkins environment variable you have used in a shell script or batch file.
+
+29)What are the various ways in which the build can be scheduled in Jenkins?
+
+30)Name some of the plugins used before in Jenkins?
+
+31)Enlist some common tests that are performed on APIs.
+
+32)What are the main challenges of API testing?
+
+33)What are the types of Bugs will API testing finds?
+
+34)What are the different ways to handle exceptions in java?
+
+35)Cmd to run jmeter in non GUI
+
+36)List Some Of The Test Plan Elements Available In JMeter.
+
+37)Types of assertion in jmeter
+
+38)What is the difference between DELETE and TRUNCATE commands?
+
+39)How to select unique records from a table?
+
+40)What is a primary key/foreign key?
+
+41) What is black box testing and white box testing
+
+42)What Test Plans consists of?
+
+43)What is Alpha testing and beta testing?
+
+44)What is the difference between Test matrix and Traceability matrix?
+
+45)What are the common performance bottlenecks?
+
+46)x-www-form-urlencoded vs multipart/form-data
+
+47) What is difference between Mutation and Query? 
+
+48)Pre-Request Script and Post-request script in Postman?
+
+49)Describe the database schema of one of your projects?  
+
+50)What are the components of an HTTP request?
+
+51)Give three difference of GraphQL and REST
