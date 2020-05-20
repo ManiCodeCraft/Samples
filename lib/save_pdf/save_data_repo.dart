@@ -1,37 +1,60 @@
-import 'dart:io';
-import 'dart:typed_data';
+import 'dart:async';
 
-import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:flutter_app/user.dart';
+import 'package:flutter_app/utility/encryption_utility.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SaveDataRepo {
-  Future<File> getFile() async {
-    final path = (await getApplicationDocumentsDirectory()).path;
-    return File("$path/file.pdf");
+
+  Future<Database> db;
+  final controller = StreamController<List<User>>();
+
+  Stream get dbStream => controller.stream;
+
+  Future<Database> openDb() async {
+    if (db != null) return db;
+
+    var path = await getDatabasesPath();
+
+    db = openDatabase(
+      join(path, "my db"),
+      onCreate: (db, version) async {
+        await db.execute("CREATE TABLE User ( id BLOB, name BLOB , age BLOB)");
+      },
+      version: 1,
+    );
+    return db;
   }
 
-  Future<File> saveFile() async {
-    var file = await getFile();
-    var dataBytes = await rootBundle.load('assets/sample.pdf');
-    // var list=dataBytes.buffer.asUint8List();
-    var s = await rootBundle.load('assets/code.txt');
-    print(s);
-    await file.writeAsBytes(s.buffer.asUint8List(), flush: true);
-    return file;
+  Future<void> insertToDb(User user) async {
+    var database = await openDb();
+    print(user.toMap());
+    await database.insert('User', user.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<String> getFileContent() async {
-    var dataByte = await rootBundle.load('assets/sample.pdf');
-    return String.fromCharCodes(dataByte.buffer.asUint8List());
+  void deleteFromDb() async {
+    var database = await openDb();
+    await database.delete('User');
   }
 
-  Future<String> readFile() async {
-    try {
-      var file = await getFile();
-      Uint8List contents = await file.readAsBytes();
-      return String.fromCharCodes(contents);
-    } catch (e) {
-      return e.toString();
-    }
+  void getDbData() async {
+    var database = await openDb();
+    var data = await database.query('User');
+
+    var list = List.generate(data.length, (index) {
+      var entry = data[index];
+      return User(
+          int.parse(EncrypterUtility.decrypt(Encrypted(entry['id']))),
+          EncrypterUtility.decrypt(Encrypted(entry['name'])),
+          int.parse(EncrypterUtility.decrypt(Encrypted(entry['age']))));
+    });
+    controller.sink.add(list);
+  }
+
+  void dispose() {
+    controller.close();
   }
 }

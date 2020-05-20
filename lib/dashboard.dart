@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/constants.dart';
+import 'package:flutter_app/utility/constants.dart';
 import 'package:flutter_app/save_pdf/save_data_repo.dart';
-import 'package:flutter_app/strings.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_app/utility/strings.dart';
+import 'package:flutter_app/user.dart';
 
 class DashboardScreen extends StatelessWidget {
-  var repo = SaveDataRepo();
-  var storage = FlutterSecureStorage();
-
+  final repo = SaveDataRepo();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,10 +26,8 @@ class DashboardScreen extends StatelessWidget {
             RaisedButton(
               child: Text(Strings.SAVE_PDF),
               onPressed: () async {
-                await storage.deleteAll();
-                var data = await repo.getFileContent();
-                await storage.write(key: "file", value: data);
-                Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE,arguments: storage);
+                await repo.insertToDb(User(4,"Priya",23));
+                Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE);
               },
             )
           ],
