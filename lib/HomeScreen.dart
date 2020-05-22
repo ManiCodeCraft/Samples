@@ -1,12 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
-
 class HomeScreen extends StatelessWidget {
-
-
- static Column _buildButtonColumn(Color color, IconData icon, String label) {
+  static Column _buildButtonColumn(Color color, IconData icon, String label) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -63,9 +58,7 @@ class HomeScreen extends StatelessWidget {
         Text('41'),
       ],
     ),
-
   );
-
 
   Widget buttonSection = Container(
     child: Row(
@@ -78,8 +71,6 @@ class HomeScreen extends StatelessWidget {
     ),
   );
 
-
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -90,14 +81,11 @@ class HomeScreen extends StatelessWidget {
           title: Text('Nav Title'),
           backgroundColor: Colors.teal,
         ),
-        body: ListView(
-          children: [
-             titleSection,
-             buttonSection,
-          ]
-        ),
+        body: ListView(children: [
+          titleSection,
+          buttonSection,
+        ]),
       ),
     );
   }
-
 }

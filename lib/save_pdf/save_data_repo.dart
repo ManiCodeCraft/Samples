@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 class SaveDataRepo {
 
   Future<Database> db;
-  final controller = StreamController<List<User>>();
+  final controller = StreamController<List<PolicyIdCard>>();
 
   Stream get dbStream => controller.stream;
 
@@ -19,37 +19,45 @@ class SaveDataRepo {
     var path = await getDatabasesPath();
 
     db = openDatabase(
-      join(path, "my db"),
+      join(path, "my_db"),
       onCreate: (db, version) async {
-        await db.execute("CREATE TABLE User ( id BLOB, name BLOB , age BLOB)");
+        await db.execute("CREATE TABLE PolicyId ( policyNumber BLOB, model BLOB , makeCompany BLOB, year BLOB, name BLOB, address BLOB, effectiveDate BLOB, expirationDate BLOB, vehicleId BLOB, naicNumber BLOB, logoString BLOB)");
       },
-      version: 1,
+      version: 2,
     );
     return db;
   }
 
-  Future<void> insertToDb(User user) async {
+  Future<void> insertToDb(PolicyIdCard user) async {
     var database = await openDb();
     print(user.toMap());
-    await database.insert('User', user.toMap(),
+    await database.insert('PolicyId', user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   void deleteFromDb() async {
     var database = await openDb();
-    await database.delete('User');
+    await database.delete('PolicyId');
   }
 
   void getDbData() async {
     var database = await openDb();
-    var data = await database.query('User');
-
+    var data = await database.query('PolicyId');
     var list = List.generate(data.length, (index) {
       var entry = data[index];
-      return User(
-          int.parse(EncrypterUtility.decrypt(Encrypted(entry['id']))),
-          EncrypterUtility.decrypt(Encrypted(entry['name'])),
-          int.parse(EncrypterUtility.decrypt(Encrypted(entry['age']))));
+    return PolicyIdCard(
+        EncrypterUtility.decrypt(Encrypted(entry['policyNumber'])),
+        EncrypterUtility.decrypt(Encrypted(entry['model'])),
+        EncrypterUtility.decrypt(Encrypted(entry['makeCompany'])),
+        int.parse(EncrypterUtility.decrypt(Encrypted(entry['year']))),
+        EncrypterUtility.decrypt(Encrypted(entry['name'])),
+        EncrypterUtility.decrypt(Encrypted(entry['address'])),
+        EncrypterUtility.decrypt(Encrypted(entry['effectiveDate'])),
+        EncrypterUtility.decrypt(Encrypted(entry['expirationDate'])),
+        EncrypterUtility.decrypt(Encrypted(entry['vehicleId'])),
+        EncrypterUtility.decrypt(Encrypted(entry['naicNumber'])),
+        EncrypterUtility.decrypt(Encrypted(entry['logoString'])));
+
     });
     controller.sink.add(list);
   }
