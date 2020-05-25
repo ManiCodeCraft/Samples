@@ -30,16 +30,17 @@ class _SaveDataState extends State<SaveDataScreen> {
         build: (pw.Context context) {
           /*return pw.Center(
               child: pw.Text(
-                  "id : ${user.id}\nname : ${user.name}\nage : ${user.age}",
+                  "id : ${user.policyNumber}\nname : ${user.name}\nage : ${user.expirationDate}",
                   style: pw.TextStyle(font: f, fontSize: 40),
                   textAlign: pw.TextAlign.center));*/
-          return IDCardWidget(user: user, pdf: doc.document, font:f);
+          // return IDCardWidget(user: user, pdf: doc.document, font:f);
+          return buildPdf(context, user, doc.document, f);
         }));
     String dir = (await getTemporaryDirectory()).path;
     File temp = new File('$dir/temp1.pdf');
     print("doc done ${temp.path}");
-   // Printing.printPdf(document: doc.document);
-    var bytes= doc.save();
+    // Printing.printPdf(document: doc.document);
+    var bytes = doc.save();
     print("bytes");
     final newFile = await temp.writeAsBytes(bytes);
     print("doc done1");
@@ -117,17 +118,9 @@ class _SaveDataState extends State<SaveDataScreen> {
       return false;
     }
   }
-}
 
-class IDCardWidget extends pw.StatelessWidget {
-  IDCardWidget({@required user, @required this.pdf, @required this.font});
-
-  PolicyIdCard user;
-  PdfDocument pdf;
-  pw.Font font;
-
-  @override
-  pw.Widget build(pw.Context context) {
+  pw.Widget buildPdf(
+      pw.Context context, PolicyIdCard user, PdfDocument pdf, pw.Font font) {
     print(user.logoString);
     return pw.Container(
       padding: pw.EdgeInsets.all(16.0),
@@ -143,7 +136,7 @@ class IDCardWidget extends pw.StatelessWidget {
                   color: PdfColors.black)),
           child: pw.Column(
             children: <pw.Widget>[
-              _getHeader(),
+              _getHeader(pdf, font, user),
               pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
@@ -153,14 +146,15 @@ class IDCardWidget extends pw.StatelessWidget {
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
-                            "POLICY NUMBER", user.policyNumber),
+                            "POLICY NUMBER", user.policyNumber, font),
                       ),
                       pw.Flexible(
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
                             "EFFECTIVE / EXPIRATION DATES",
-                            "${user.effectiveDate}  ${user.expirationDate}"),
+                            "${user.effectiveDate}  ${user.expirationDate}",
+                            font),
                       ),
                     ],
                   ),
@@ -169,19 +163,23 @@ class IDCardWidget extends pw.StatelessWidget {
                       pw.Flexible(
                         fit: pw.FlexFit.tight,
                         flex: 1,
-                        child: _getPolicyDataLayout("YEAR/MAKE/MODEL",
-                            "${user.year.toString()} ${user.makeCompany} ${user.model}"),
+                        child: _getPolicyDataLayout(
+                            "YEAR/MAKE/MODEL",
+                            "${user.year.toString()} ${user.makeCompany} ${user.model}",
+                            font),
                       ),
                       pw.Flexible(
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
-                            "VEHICLE IDENTIFICATION NUMBER", user.vehicleId),
+                            "VEHICLE IDENTIFICATION NUMBER",
+                            user.vehicleId,
+                            font),
                       ),
                     ],
                   ),
                   _getPolicyDataLayout(
-                      "NAMED INSURANCE", "${user.name}\n${user.address}")
+                      "NAMED INSURANCE", "${user.name}\n${user.address}", font)
                 ],
               ),
               pw.SizedBox(
@@ -233,10 +231,9 @@ class IDCardWidget extends pw.StatelessWidget {
     );
   }
 
-  pw.Widget _getHeader() {
+  pw.Widget _getHeader(PdfDocument pdf, pw.Font font, PolicyIdCard user) {
     return pw.Row(
       children: <pw.Widget>[
-
         pw.Image(PdfImage(pdf,
             image: base64Decode(user.logoString), width: 32, height: 32)),
         pw.Column(
@@ -251,9 +248,7 @@ class IDCardWidget extends pw.StatelessWidget {
             pw.Text(
               "INSURANCE",
               style: pw.TextStyle(
-                  font: font,
-                  fontSize: 14.0,
-                  fontWeight: pw.FontWeight.bold),
+                  /*font: font,*/ fontSize: 14.0, fontWeight: pw.FontWeight.bold),
             ),
           ],
         ),
@@ -271,16 +266,12 @@ class IDCardWidget extends pw.StatelessWidget {
               pw.Text(
                 "CALIFORNIA AUTOMOBILE ISURANCE COMPANY",
                 textAlign: pw.TextAlign.center,
-                style: pw.TextStyle(
-                    font: font,
-                    fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(/*font: font,*/ fontWeight: pw.FontWeight.bold),
               ),
               pw.Text(
                 "AGENCY . True Pro Insurance Center Inc. 619-820-0036",
                 textAlign: pw.TextAlign.center,
-                style: pw.TextStyle(
-                    font: font,
-                    fontSize: 10),
+                style: pw.TextStyle(/*font: font,*/ fontSize: 10),
               )
             ],
           ),
@@ -289,7 +280,7 @@ class IDCardWidget extends pw.StatelessWidget {
     );
   }
 
-  pw.Widget _getPolicyDataLayout(String header, String value) {
+  pw.Widget _getPolicyDataLayout(String header, String value, pw.Font font) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: <pw.Widget>[
@@ -299,14 +290,12 @@ class IDCardWidget extends pw.StatelessWidget {
         pw.Text(
           header,
           style: pw.TextStyle(
-              font: font,
-              fontSize: 12,
-              fontWeight: pw.FontWeight.bold),
+              /*font: font,*/ fontSize: 12, fontWeight: pw.FontWeight.bold),
         ),
         pw.Text(
           value,
           style: pw.TextStyle(
-            font: font,
+            /*font: font,*/
             fontSize: 12,
           ),
         )
