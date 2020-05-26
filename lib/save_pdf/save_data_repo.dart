@@ -25,7 +25,7 @@ class SaveDataRepo {
       join(path, Constants.DB_NAME),
       onCreate: (Database db, int version) async {
         await db.execute(
-            'CREATE TABLE PolicyId ( policyNumber BLOB, model BLOB , makeCompany BLOB, year BLOB, name BLOB, address BLOB, effectiveDate BLOB, expirationDate BLOB, vehicleId BLOB, naicNumber BLOB, logoString BLOB)');
+            'CREATE TABLE PolicyId ( policyNumber BLOB PRIMARY KEY, model BLOB , makeCompany BLOB, year BLOB, name BLOB, address BLOB, effectiveDate BLOB, expirationDate BLOB, vehicleId BLOB, naicNumber BLOB, logoString BLOB)');
       },
       version: 2,
     );
@@ -44,9 +44,16 @@ class SaveDataRepo {
     await database.delete('PolicyId');
   }
 
-  Future<void> getDbData() async {
+  Future<List<PolicyIdCard>> getDbData(String policyNumber) async {
     final Database database = await openDb();
-    final List<Map<String, dynamic>> data = await database.query('PolicyId');
+    final Uint8List encryptedPolicyNumber = encrypt(policyNumber).bytes;
+    print(encryptedPolicyNumber);
+    final List<Map<String, dynamic>> data =
+        /*await database.query('PolicyId',
+        where: 'policyNumber = ?',
+        whereArgs: <dynamic>[encryptedPolicyNumber]);*/
+        await database.query('PolicyId');
+    print(data.length);
     final List<PolicyIdCard> list =
         List<PolicyIdCard>.generate(data.length, (int index) {
       final Map<String, dynamic> entry = data[index];
@@ -63,7 +70,14 @@ class SaveDataRepo {
           decrypt(Encrypted(entry['naicNumber'] as Uint8List)),
           decrypt(Encrypted(entry['logoString'] as Uint8List)));
     });
-    controller.sink.add(list);
+
+    final PolicyIdCard result = list.firstWhere(
+        (PolicyIdCard element) => element.policyNumber == policyNumber,
+        orElse: () => null);
+
+    return result == null ? <PolicyIdCard>[] : <PolicyIdCard>[result];
+
+    // controller.sink.add(list);
   }
 
   void dispose() {

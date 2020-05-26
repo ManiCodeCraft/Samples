@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/save_pdf/save_data_repo.dart';
 import 'package:flutter_app/user.dart';
 import 'package:flutter_app/utility/strings.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
@@ -18,7 +17,6 @@ class SaveDataScreen extends StatefulWidget {
 }
 
 class _SaveDataState extends State<SaveDataScreen> {
-  final SaveDataRepo repo = SaveDataRepo();
   Future<File> pdfFile;
   File logoImage;
 
@@ -42,14 +40,7 @@ class _SaveDataState extends State<SaveDataScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    repo.getDbData();
-  }
-
-  @override
   void dispose() {
-    repo.dispose();
     pdfFile.then((File value) {
       value.delete();
       logoImage.delete();
@@ -59,62 +50,32 @@ class _SaveDataState extends State<SaveDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<PolicyIdCard>>(
-      stream: repo.dbStream,
-      builder:
-          (BuildContext context, AsyncSnapshot<List<PolicyIdCard>> snapshot) {
-        if (snapshot.hasData) {
-          final bool isDataPresent = _getPdFData(snapshot.data);
-          if (isDataPresent) {
-            return FutureBuilder<File>(
-                future: pdfFile,
-                builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-                  if (snapshot.hasData) {
-                    return PDFViewerScaffold(
-                      appBar: AppBar(
-                        title: Text(Strings.FILE_DATA),
-                      ),
-                      path: snapshot.data.path,
-                    );
-                  } else {
-                    return Scaffold(
-                        appBar: AppBar(
-                          title: Text(Strings.SAVE_PDF),
-                        ),
-                        body: Container(
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ));
-                  }
-                });
-          } else {
-            return Scaffold(
-                appBar: AppBar(
-                  title: Text(Strings.FILE_DATA),
-                ),
-                body: Center(
-                  child: Text(Strings.NO_DATA_PRESENT),
-                ));
-          }
-        } else {
-          return Scaffold(
+    final PolicyIdCard idCard =
+        ModalRoute.of(context).settings.arguments as PolicyIdCard;
+    pdfFile = constructFile(idCard);
+
+    return FutureBuilder<File>(
+        future: pdfFile,
+        builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+          if (snapshot.hasData) {
+            return PDFViewerScaffold(
               appBar: AppBar(
                 title: Text(Strings.FILE_DATA),
               ),
-              body: const CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-  bool _getPdFData(List<PolicyIdCard> list) {
-    if (list.isNotEmpty) {
-      pdfFile = constructFile(list.first);
-      return true;
-    } else {
-      return false;
-    }
+              path: snapshot.data.path,
+            );
+          } else {
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text(Strings.SAVE_PDF),
+                ),
+                body: Container(
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ));
+          }
+        });
   }
 
   pw.Widget buildPdf(

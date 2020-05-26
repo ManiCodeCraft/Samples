@@ -30,28 +30,66 @@ class DashboardScreen extends StatelessWidget {
             RaisedButton(
               child: Text(Strings.SAVE_PDF),
               onPressed: () async {
-                final ByteData image = await rootBundle.load('images/logo.jpg');
-                final String imageString =
-                    base64Encode(image.buffer.asUint8List());
-                // print(imageString);
-                await repo.insertToDb(PolicyIdCard(
-                    '0401-27-2001-67006',
-                    'COROLLA',
-                    'TOYOTA',
-                    2009,
-                    'REYNA REYNOSA',
-                    '5700 Cowles Mountain Blvd #E141\nLa Mesa CA 91942',
-                    '08/07/2019',
-                    '02/07/2020',
-                    'JTDBL40EX9J022713',
-                    'NAIC #38342',
-                    imageString));
-                Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE);
+                final List<PolicyIdCard> idList =
+                    await repo.getDbData('0401-27-2001-67006');
+                if (idList.isNotEmpty) {
+                  Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE,
+                      arguments: idList.first);
+                } else {
+                  if (await _showAlert(context)) {
+                    await _insertToDb(context);
+                  }
+                }
               },
             )
           ],
         ),
       ),
     );
+  }
+
+  Future<bool> _showAlert(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('ID card is not dowloaded yet'),
+            content: const Text('Would you like to download ?'),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              FlatButton(
+                child: const Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> _insertToDb(BuildContext context) async {
+    final ByteData image = await rootBundle.load('images/logo.jpg');
+    final String imageString = base64Encode(image.buffer.asUint8List());
+    // print(imageString);
+    final PolicyIdCard idCard = PolicyIdCard(
+        '0401-27-2001-67006',
+        'COROLLA',
+        'TOYOTA',
+        2009,
+        'REYNA REYNOSA',
+        '5700 Cowles Mountain Blvd #E141\nLa Mesa CA 91942',
+        '08/07/2019',
+        '02/07/2020',
+        'JTDBL40EX9J022713',
+        'NAIC #38342',
+        imageString);
+    await repo.insertToDb(idCard);
+    Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE, arguments: idCard);
   }
 }
