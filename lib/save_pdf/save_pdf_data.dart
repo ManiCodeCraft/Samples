@@ -20,23 +20,21 @@ class SaveDataScreen extends StatefulWidget {
 class _SaveDataState extends State<SaveDataScreen> {
   final repo = SaveDataRepo();
   Future<File> pdfFile;
+  File logoImage;
 
   Future<File> constructFile(PolicyIdCard user) async {
     final doc = pw.Document();
     var data = await rootBundle.load("fonts/Roboto-Regular.ttf");
+    String dir = (await getTemporaryDirectory()).path;
+    logoImage = new File('$dir/tempImage.jpg');
+    logoImage.writeAsBytesSync(base64Decode(user.logoString));
     final f = pw.Font.ttf(data);
     doc.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-          /*return pw.Center(
-              child: pw.Text(
-                  "id : ${user.policyNumber}\nname : ${user.name}\nage : ${user.expirationDate}",
-                  style: pw.TextStyle(font: f, fontSize: 40),
-                  textAlign: pw.TextAlign.center));*/
-          // return IDCardWidget(user: user, pdf: doc.document, font:f);
           return buildPdf(context, user, doc.document, f);
         }));
-    String dir = (await getTemporaryDirectory()).path;
+
     File temp = new File('$dir/temp1.pdf');
     print("doc done ${temp.path}");
     // Printing.printPdf(document: doc.document);
@@ -56,7 +54,10 @@ class _SaveDataState extends State<SaveDataScreen> {
   @override
   void dispose() {
     repo.dispose();
-    pdfFile.then((value) => value.delete());
+    pdfFile.then((value) {
+      value.delete();
+      logoImage.delete();
+    });
     super.dispose();
   }
 
@@ -68,6 +69,7 @@ class _SaveDataState extends State<SaveDataScreen> {
         if (snapshot.hasData) {
           bool isDataPresent = _getPdFData(snapshot.data);
           if (isDataPresent) {
+            // return Center(child: Image.memory(snapshot.data.first.logoString,width: 32,height: 32,),);
             return FutureBuilder<File>(
                 future: pdfFile,
                 builder: (context, snapshot) {
@@ -123,7 +125,6 @@ class _SaveDataState extends State<SaveDataScreen> {
       pw.Context context, PolicyIdCard user, PdfDocument pdf, pw.Font font) {
     print(user.logoString);
     return pw.Container(
-      padding: pw.EdgeInsets.all(16.0),
       child: pw.Column(children: <pw.Widget>[
         pw.Container(
           padding: pw.EdgeInsets.all(8.0),
@@ -234,8 +235,11 @@ class _SaveDataState extends State<SaveDataScreen> {
   pw.Widget _getHeader(PdfDocument pdf, pw.Font font, PolicyIdCard user) {
     return pw.Row(
       children: <pw.Widget>[
-        pw.Image(PdfImage(pdf,
-            image: base64Decode(user.logoString), width: 32, height: 32)),
+        pw.Image(PdfImage.file(pdf, bytes: logoImage.readAsBytesSync()),
+            width: 32, height: 32),
+        pw.SizedBox(
+          width: 4,
+        ),
         pw.Column(
           children: <pw.Widget>[
             pw.Text(
@@ -248,7 +252,9 @@ class _SaveDataState extends State<SaveDataScreen> {
             pw.Text(
               "INSURANCE",
               style: pw.TextStyle(
-                  /*font: font,*/ fontSize: 14.0, fontWeight: pw.FontWeight.bold),
+                  /*font: font,*/
+                  fontSize: 14.0,
+                  fontWeight: pw.FontWeight.bold),
             ),
           ],
         ),
@@ -260,13 +266,16 @@ class _SaveDataState extends State<SaveDataScreen> {
                 textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(
                     /*font: font,*/
-                    fontSize: 12,
+                    fontSize: 11.0,
                     fontWeight: pw.FontWeight.bold),
               ),
               pw.Text(
                 "CALIFORNIA AUTOMOBILE ISURANCE COMPANY",
                 textAlign: pw.TextAlign.center,
-                style: pw.TextStyle(/*font: font,*/ fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(
+                    /*font: font,*/
+                    fontSize: 13.0,
+                    fontWeight: pw.FontWeight.bold),
               ),
               pw.Text(
                 "AGENCY . True Pro Insurance Center Inc. 619-820-0036",
@@ -290,7 +299,9 @@ class _SaveDataState extends State<SaveDataScreen> {
         pw.Text(
           header,
           style: pw.TextStyle(
-              /*font: font,*/ fontSize: 12, fontWeight: pw.FontWeight.bold),
+              /*font: font,*/
+              fontSize: 12,
+              fontWeight: pw.FontWeight.bold),
         ),
         pw.Text(
           value,

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/save_pdf/save_data_repo.dart';
@@ -32,7 +31,7 @@ class DashboardScreen extends StatelessWidget {
               onPressed: () async {
                 var image = await rootBundle.load("images/logo.jpg");
                 String imageString = base64Encode(image.buffer.asUint8List());
-                print(imageString);
+               // print(imageString);
                 await repo.insertToDb(PolicyIdCard(
                     "0401-27-2001-67006",
                     "COROLLA",

@@ -1,3 +1,4 @@
+
 import 'package:flutter_app/utility/encryption_utility.dart';
 
 class User {
