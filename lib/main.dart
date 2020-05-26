@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/utility/constants.dart';
 import 'package:flutter_app/dashboard.dart';
 import 'package:flutter_app/registration/register_user.dart';
 import 'package:flutter_app/save_pdf/save_pdf_data.dart';
+import 'package:flutter_app/utility/constants.dart';
 
 void main() {
   return runApp(MyApp());
@@ -18,10 +18,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.pink,
       ),
       initialRoute: Constants.HOME_ROUTE,
-      routes: {
-        Constants.HOME_ROUTE: (context) => DashboardScreen(),
-        Constants.REGISTER_USER_ROUTE: (context) => RegisterUser(),
-        Constants.SAVE_PDF_ROUTE: (context) => SaveDataScreen(),
+      routes: <String, WidgetBuilder>{
+        Constants.HOME_ROUTE: (BuildContext context) => DashboardScreen(),
+        Constants.REGISTER_USER_ROUTE: (BuildContext context) => RegisterUser(),
+        Constants.SAVE_PDF_ROUTE: (BuildContext context) => SaveDataScreen(),
       },
     );
   }

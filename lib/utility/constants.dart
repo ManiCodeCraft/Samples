@@ -8,4 +8,6 @@ class Constants {
   static const String HOME_ROUTE = '/';
   static const String REGISTER_USER_ROUTE = '/register_user';
   static const String SAVE_PDF_ROUTE = '/save_pdf';
+  static const String ENCRYPTION_KEY = 'This is my sample key for encryn';
+  static const String DB_NAME = 'my_db';
 }

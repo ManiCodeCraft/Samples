@@ -17,5 +17,6 @@ class Strings {
   static const String ERR_DOB = 'Select DOB';
   static const String SAVE_PDF = 'Save Pdf';
   static const String NO_DATA_PRESENT = 'No data present';
-  static const String FILE_DATA ='File Data';
+  static const String FILE_DATA = 'File Data';
+  static const String DASHBOARD = 'DashBoard';
 }

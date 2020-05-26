@@ -13,9 +13,9 @@ class RegisterUser extends StatefulWidget {
 }
 
 class _RegisterUserState extends State<RegisterUser> {
-  final _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final Map<String, dynamic> formData = {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final Map<String, dynamic> formData = <String, dynamic>{
     Constants.ARG_FIRST_NAME: null,
     Constants.ARG_LAST_NAME: null,
     Constants.ARG_POLICY_NUMBER: null,
@@ -28,12 +28,12 @@ class _RegisterUserState extends State<RegisterUser> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-       // resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(Strings.REGISTER_USER),
         ),
         body: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -51,42 +51,42 @@ class _RegisterUserState extends State<RegisterUser> {
                     (String value) {
                       formData[Constants.ARG_FIRST_NAME] = value;
                     },
-                    (value) {
+                    (String value) {
                       return value.isEmpty ? Strings.ERR_FIRST_NAME : null;
                     },
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                     child: _getFormInputField(
                       Strings.LAST_NAME,
                       (String value) {
                         formData[Constants.ARG_LAST_NAME] = value;
                       },
-                      (value) {
+                      (String value) {
                         return value.isEmpty ? Strings.ERR_LAST_NAME : null;
                       },
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                     child: _getFormInputField(
                       Strings.ZIP_CODE,
                       (String value) {
                         formData[Constants.ARG_ZIP_CODE] = value;
                       },
-                      (value) {
+                      (String value) {
                         return value.isEmpty ? Strings.ERR_ZIP : null;
                       },
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    padding:const EdgeInsets.fromLTRB(0, 8, 0, 0),
                     child: _getFormInputField(
                       Strings.EMAIL,
                       (String value) {
                         formData[Constants.ARG_EMAIL] = value;
                       },
-                      (value) {
+                      (String value) {
                         if (value.isEmpty) {
                           return Strings.EMPTY_EMAIL;
                         } else {
@@ -117,16 +117,16 @@ class _RegisterUserState extends State<RegisterUser> {
   }
 
   String _getDOB() {
-    var dateOfBirth = formData[Constants.ARG_DOB];
+    final dynamic dateOfBirth = formData[Constants.ARG_DOB];
     if (dateOfBirth == null) {
       return Strings.DOB;
     } else {
-      return "${dateOfBirth.toLocal()}".split(' ')[0];
+      return '${dateOfBirth.toLocal()}'.split(' ')[0];
     }
   }
 
   DateTime _getDate() {
-    var dateOfBirth = formData[Constants.ARG_DOB];
+    final dynamic dateOfBirth = formData[Constants.ARG_DOB];
     if (dateOfBirth == null) {
       return DateTime.now();
     } else if (dateOfBirth is DateTime) {
@@ -158,7 +158,7 @@ class _RegisterUserState extends State<RegisterUser> {
         maxLengthEnforced: true,
         keyboardType: TextInputType.number,
         onSaved: onSaved,
-        validator: (value) {
+        validator: (String value) {
           if (value.isEmpty) {
             return Strings.EMPTY_POLICY_NUMBER;
           } else {
@@ -171,10 +171,10 @@ class _RegisterUserState extends State<RegisterUser> {
   }
 
   Widget _getDateOfBirthField() {
-    return FormField(
-      builder: (state) {
+    return FormField<dynamic>(
+      builder: (FormFieldState<dynamic> state) {
         return Padding(
-          padding: EdgeInsets.fromLTRB(0, 16, 0, 8),
+          padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
           child: Column(children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -183,7 +183,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 IconButton(
                   icon: Icon(Icons.calendar_today),
                   onPressed: () async {
-                    var picked = await showDatePicker(
+                    final DateTime picked = await showDatePicker(
                         context: context,
                         initialDate: _getDate(),
                         firstDate: DateTime(1800),
@@ -197,7 +197,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 )
               ],
             ),
-            Row(children: [
+            Row(children: <Widget>[
               Text(
                 state.errorText ?? '',
                 textAlign: TextAlign.start,
@@ -210,7 +210,7 @@ class _RegisterUserState extends State<RegisterUser> {
           ]),
         );
       },
-      validator: (value) {
+      validator: (dynamic value) {
         if (formData[Constants.ARG_DOB] == null) {
           return Strings.ERR_DOB;
         } else {

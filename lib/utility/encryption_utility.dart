@@ -1,15 +1,14 @@
 import 'package:encrypt/encrypt.dart';
+import 'package:flutter_app/utility/constants.dart';
 
-class EncrypterUtility {
-  static final key = Key.fromUtf8("This is my sample key for encryn");
-  static final iv = IV.fromLength(16);
-  static final encrypter = Encrypter(AES(key));
+final Key key = Key.fromUtf8(Constants.ENCRYPTION_KEY);
+final IV iv = IV.fromLength(16);
+final Encrypter encrypter = Encrypter(AES(key));
 
-  static Encrypted encrypt(String data) {
-    return encrypter.encrypt(data, iv: iv);
-  }
+Encrypted encrypt(String data) {
+  return encrypter.encrypt(data, iv: iv);
+}
 
-  static String decrypt(Encrypted data) {
-    return encrypter.decrypt(data, iv: iv);
-  }
+String decrypt(Encrypted data) {
+  return encrypter.decrypt(data, iv: iv);
 }

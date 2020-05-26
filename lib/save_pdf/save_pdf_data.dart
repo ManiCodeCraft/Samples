@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-//import 'package:printing/printing.dart';
 
 class SaveDataScreen extends StatefulWidget {
   @override
@@ -18,30 +18,26 @@ class SaveDataScreen extends StatefulWidget {
 }
 
 class _SaveDataState extends State<SaveDataScreen> {
-  final repo = SaveDataRepo();
+  final SaveDataRepo repo = SaveDataRepo();
   Future<File> pdfFile;
   File logoImage;
 
   Future<File> constructFile(PolicyIdCard user) async {
-    final doc = pw.Document();
-    var data = await rootBundle.load("fonts/Roboto-Regular.ttf");
-    String dir = (await getTemporaryDirectory()).path;
-    logoImage = new File('$dir/tempImage.jpg');
+    final pw.Document doc = pw.Document();
+    final ByteData data = await rootBundle.load('fonts/Roboto-Regular.ttf');
+    final String dir = (await getTemporaryDirectory()).path;
+    logoImage = File('$dir/tempImage.jpg');
     logoImage.writeAsBytesSync(base64Decode(user.logoString));
-    final f = pw.Font.ttf(data);
+    final pw.Font f = pw.Font.ttf(data);
     doc.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return buildPdf(context, user, doc.document, f);
         }));
 
-    File temp = new File('$dir/temp1.pdf');
-    print("doc done ${temp.path}");
-    // Printing.printPdf(document: doc.document);
-    var bytes = doc.save();
-    print("bytes");
-    final newFile = await temp.writeAsBytes(bytes);
-    print("doc done1");
+    final File temp = File('$dir/temp1.pdf');
+    final Uint8List bytes = doc.save();
+    final File newFile = await temp.writeAsBytes(bytes);
     return newFile;
   }
 
@@ -54,7 +50,7 @@ class _SaveDataState extends State<SaveDataScreen> {
   @override
   void dispose() {
     repo.dispose();
-    pdfFile.then((value) {
+    pdfFile.then((File value) {
       value.delete();
       logoImage.delete();
     });
@@ -65,14 +61,14 @@ class _SaveDataState extends State<SaveDataScreen> {
   Widget build(BuildContext context) {
     return StreamBuilder<List<PolicyIdCard>>(
       stream: repo.dbStream,
-      builder: (context, snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<List<PolicyIdCard>> snapshot) {
         if (snapshot.hasData) {
-          bool isDataPresent = _getPdFData(snapshot.data);
+          final bool isDataPresent = _getPdFData(snapshot.data);
           if (isDataPresent) {
-            // return Center(child: Image.memory(snapshot.data.first.logoString,width: 32,height: 32,),);
             return FutureBuilder<File>(
                 future: pdfFile,
-                builder: (context, snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
                   if (snapshot.hasData) {
                     return PDFViewerScaffold(
                       appBar: AppBar(
@@ -86,7 +82,7 @@ class _SaveDataState extends State<SaveDataScreen> {
                           title: Text(Strings.SAVE_PDF),
                         ),
                         body: Container(
-                          child: Center(
+                          child: const Center(
                             child: CircularProgressIndicator(),
                           ),
                         ));
@@ -106,14 +102,14 @@ class _SaveDataState extends State<SaveDataScreen> {
               appBar: AppBar(
                 title: Text(Strings.FILE_DATA),
               ),
-              body: CircularProgressIndicator());
+              body: const CircularProgressIndicator());
         }
       },
     );
   }
 
   bool _getPdFData(List<PolicyIdCard> list) {
-    if (list.length > 0) {
+    if (list.isNotEmpty) {
       pdfFile = constructFile(list.first);
       return true;
     } else {
@@ -127,8 +123,8 @@ class _SaveDataState extends State<SaveDataScreen> {
     return pw.Container(
       child: pw.Column(children: <pw.Widget>[
         pw.Container(
-          padding: pw.EdgeInsets.all(8.0),
-          decoration: pw.BoxDecoration(
+          padding: const pw.EdgeInsets.all(8.0),
+          decoration: const pw.BoxDecoration(
               border: pw.BoxBorder(
                   left: true,
                   top: true,
@@ -147,14 +143,14 @@ class _SaveDataState extends State<SaveDataScreen> {
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
-                            "POLICY NUMBER", user.policyNumber, font),
+                            'POLICY NUMBER', user.policyNumber, font),
                       ),
                       pw.Flexible(
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
-                            "EFFECTIVE / EXPIRATION DATES",
-                            "${user.effectiveDate}  ${user.expirationDate}",
+                            'EFFECTIVE / EXPIRATION DATES',
+                            '${user.effectiveDate}  ${user.expirationDate}',
                             font),
                       ),
                     ],
@@ -165,36 +161,36 @@ class _SaveDataState extends State<SaveDataScreen> {
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
-                            "YEAR/MAKE/MODEL",
-                            "${user.year.toString()} ${user.makeCompany} ${user.model}",
+                            'YEAR/MAKE/MODEL',
+                            '${user.year.toString()} ${user.makeCompany} ${user.model}',
                             font),
                       ),
                       pw.Flexible(
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
-                            "VEHICLE IDENTIFICATION NUMBER",
+                            'VEHICLE IDENTIFICATION NUMBER',
                             user.vehicleId,
                             font),
                       ),
                     ],
                   ),
                   _getPolicyDataLayout(
-                      "NAMED INSURANCE", "${user.name}\n${user.address}", font)
+                      'NAMED INSURANCE', '${user.name}\n${user.address}', font)
                 ],
               ),
               pw.SizedBox(
                 height: 48.0,
               ),
               pw.Text(
-                "TO REPORT A CLAIM, please call (800) 503-3724.",
+                'TO REPORT A CLAIM, please call (800) 503-3724.',
                 textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(
                     /*font: font,*/
                     fontWeight: pw.FontWeight.bold),
               ),
               pw.Text(
-                "For access to ROADSIDE ASSISTANCE ONLY, please call (866) 519-6478.",
+                'For access to ROADSIDE ASSISTANCE ONLY, please call (866) 519-6478.',
                 textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(
                     /*font: font,*/
@@ -209,7 +205,7 @@ class _SaveDataState extends State<SaveDataScreen> {
                 children: <pw.Widget>[
                   pw.Text(
                     user.naicNumber,
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                         /*font: font,*/
                         fontSize: 10),
                   )
@@ -222,9 +218,9 @@ class _SaveDataState extends State<SaveDataScreen> {
           height: 4.0,
         ),
         pw.Text(
-          "This inssurance complies with CVC \$16056 or \$16500.5.\nThis image may not meet law enforcement requirements for proof of insurance",
+          'This inssurance complies with CVC \$16056 or \$16500.5.\nThis image may not meet law enforcement requirements for proof of insurance',
           textAlign: pw.TextAlign.center,
-          style: pw.TextStyle(
+          style: const pw.TextStyle(
               /*font: font,*/
               fontSize: 10.0),
         ),
@@ -243,14 +239,14 @@ class _SaveDataState extends State<SaveDataScreen> {
         pw.Column(
           children: <pw.Widget>[
             pw.Text(
-              "MERCURY",
+              'MERCURY',
               style: pw.TextStyle(
                   /*font: font,*/
                   fontSize: 16.0,
                   fontWeight: pw.FontWeight.bold),
             ),
             pw.Text(
-              "INSURANCE",
+              'INSURANCE',
               style: pw.TextStyle(
                   /*font: font,*/
                   fontSize: 14.0,
@@ -262,7 +258,7 @@ class _SaveDataState extends State<SaveDataScreen> {
           child: pw.Column(
             children: <pw.Widget>[
               pw.Text(
-                "CALIFORNIA EVIDENCE OF INSURED ID CARD",
+                'CALIFORNIA EVIDENCE OF INSURED ID CARD',
                 textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(
                     /*font: font,*/
@@ -270,7 +266,7 @@ class _SaveDataState extends State<SaveDataScreen> {
                     fontWeight: pw.FontWeight.bold),
               ),
               pw.Text(
-                "CALIFORNIA AUTOMOBILE ISURANCE COMPANY",
+                'CALIFORNIA AUTOMOBILE ISURANCE COMPANY',
                 textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(
                     /*font: font,*/
@@ -278,9 +274,9 @@ class _SaveDataState extends State<SaveDataScreen> {
                     fontWeight: pw.FontWeight.bold),
               ),
               pw.Text(
-                "AGENCY . True Pro Insurance Center Inc. 619-820-0036",
+                'AGENCY . True Pro Insurance Center Inc. 619-820-0036',
                 textAlign: pw.TextAlign.center,
-                style: pw.TextStyle(/*font: font,*/ fontSize: 10),
+                style: const pw.TextStyle(/*font: font,*/ fontSize: 10),
               )
             ],
           ),
@@ -305,7 +301,7 @@ class _SaveDataState extends State<SaveDataScreen> {
         ),
         pw.Text(
           value,
-          style: pw.TextStyle(
+          style: const pw.TextStyle(
             /*font: font,*/
             fontSize: 12,
           ),
