@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/contact_list/contact_screen.dart';
 import 'package:flutter_app/dashboard.dart';
 import 'package:flutter_app/registration/register_user.dart';
 import 'package:flutter_app/save_pdf/save_pdf_data.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         Constants.HOME_ROUTE: (BuildContext context) => DashboardScreen(),
         Constants.REGISTER_USER_ROUTE: (BuildContext context) => RegisterUser(),
         Constants.SAVE_PDF_ROUTE: (BuildContext context) => SaveDataScreen(),
+        Constants.CONTACT_LIST_ROUTE: (BuildContext context) => ContactList(),
       },
     );
   }

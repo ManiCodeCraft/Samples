@@ -19,4 +19,5 @@ class Strings {
   static const String NO_DATA_PRESENT = 'No data present';
   static const String FILE_DATA = 'File Data';
   static const String DASHBOARD = 'DashBoard';
+  static const String CONTACTS = 'Contacts';
 }

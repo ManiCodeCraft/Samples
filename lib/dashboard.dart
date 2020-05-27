@@ -41,6 +41,12 @@ class DashboardScreen extends StatelessWidget {
                   }
                 }
               },
+            ),
+            RaisedButton(
+              child: Text(Strings.CONTACTS),
+              onPressed: () {
+                Navigator.pushNamed(context, Constants.CONTACT_LIST_ROUTE);
+              },
             )
           ],
         ),
