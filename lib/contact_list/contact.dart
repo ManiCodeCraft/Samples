@@ -11,7 +11,7 @@ class Contact {
   }
 
   final String id;
-  final String name;
+  String name;
   final String email;
   final String gender;
 
@@ -29,7 +29,7 @@ class Phone {
     );
   }
 
-  final String mobile;
+  String mobile;
   final String home;
   final String office;
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc_provider.dart';
+import 'package:flutter_app/contact_list/contact_repo.dart';
 import 'package:flutter_app/contact_list/contact_screen.dart';
 import 'package:flutter_app/dashboard.dart';
 import 'package:flutter_app/registration/register_user.dart';
@@ -13,19 +15,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Mercury Sample',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      initialRoute: Constants.HOME_ROUTE,
-      routes: <String, WidgetBuilder>{
-        Constants.HOME_ROUTE: (BuildContext context) => DashboardScreen(),
-        Constants.REGISTER_USER_ROUTE: (BuildContext context) => RegisterUser(),
-        Constants.SAVE_PDF_ROUTE: (BuildContext context) => SaveDataScreen(),
-        Constants.CONTACT_LIST_ROUTE: (BuildContext context) => ContactList(),
-      },
-    );
+    return BlocProvider<ContactRepo>(
+        bloc: ContactRepo(),
+        child: MaterialApp(
+          title: 'Mercury Sample',
+          theme: ThemeData(
+            primarySwatch: Colors.pink,
+          ),
+          initialRoute: Constants.HOME_ROUTE,
+          routes: <String, WidgetBuilder>{
+            Constants.HOME_ROUTE: (BuildContext context) => DashboardScreen(),
+            Constants.REGISTER_USER_ROUTE: (BuildContext context) =>
+                RegisterUser(),
+            Constants.SAVE_PDF_ROUTE: (BuildContext context) =>
+                SaveDataScreen(),
+            Constants.CONTACT_LIST_ROUTE: (BuildContext context) =>
+                ContactListScreen(),
+          },
+        ));
   }
 }
 /*

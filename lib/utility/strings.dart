@@ -20,4 +20,5 @@ class Strings {
   static const String FILE_DATA = 'File Data';
   static const String DASHBOARD = 'DashBoard';
   static const String CONTACTS = 'Contacts';
+  static const String CONTACT_DETAIL = "Contact Detail";
 }
