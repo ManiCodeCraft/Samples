@@ -29,9 +29,9 @@ class _RegisterUserState extends State<RegisterUser> {
     return Scaffold(
         key: _scaffoldKey,
         // resizeToAvoidBottomInset: false,
-        appBar: AppBar(
+       /* appBar: AppBar(
           title: Text(Strings.REGISTER_USER),
-        ),
+        ),*/
         body: Container(
           padding: const EdgeInsets.all(16.0),
           child: Form(

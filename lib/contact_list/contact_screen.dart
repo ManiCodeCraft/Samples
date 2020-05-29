@@ -11,9 +11,9 @@ class ContactListScreen extends StatelessWidget {
     final ContactRepo bloc = BlocProvider.of<ContactRepo>(context);
     bloc.fetchContact();
     return Scaffold(
-        appBar: AppBar(
+        /*appBar: AppBar(
           title: Text(Strings.CONTACTS),
-        ),
+        ),*/
         body: StreamBuilder<List<Contact>>(
           stream: bloc.contactStream,
           builder:
