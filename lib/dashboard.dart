@@ -5,6 +5,7 @@ import 'package:flutter_app/drawer_bloc.dart';
 import 'package:flutter_app/drawer_layout.dart';
 import 'package:flutter_app/registration/register_user.dart';
 import 'package:flutter_app/save_pdf/save_data_repo.dart';
+import 'package:flutter_app/save_pdf/save_pdf_data.dart';
 import 'package:flutter_app/utility/strings.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -85,6 +86,15 @@ class DashboardScreen extends StatelessWidget {
               switch (snapshot.data) {
                 case Strings.REGISTER_USER:
                   return RegisterUser(scaffoldKey: _scaffoldKey,);
+                  break;
+                case Strings.SAVE_PDF:
+                  if (bloc.idCard != null) {
+                    return SaveDataScreen(
+                      idCard: bloc.idCard,
+                    );
+                  } else {
+                    return _getDefaultLayout();
+                  }
                   break;
                 case Strings.CONTACTS:
                   return ContactListScreen();
