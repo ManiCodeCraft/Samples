@@ -29,12 +29,12 @@ class MyApp extends StatelessWidget {
               routes: <String, WidgetBuilder>{
                 Constants.HOME_ROUTE: (BuildContext context) =>
                     DashboardScreen(),
-                Constants.REGISTER_USER_ROUTE: (BuildContext context) =>
-                    RegisterUser(),
+               /* Constants.REGISTER_USER_ROUTE: (BuildContext context) =>
+                    RegisterUser(),*/
                 Constants.SAVE_PDF_ROUTE: (BuildContext context) =>
                     SaveDataScreen(),
-                Constants.CONTACT_LIST_ROUTE: (BuildContext context) =>
-                    ContactListScreen(),
+               /* Constants.CONTACT_LIST_ROUTE: (BuildContext context) =>
+                    ContactListScreen(),*/
               },
             )));
   }

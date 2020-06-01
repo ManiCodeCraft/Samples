@@ -3,38 +3,32 @@ import 'package:flutter_app/bloc_provider.dart';
 import 'package:flutter_app/contact_list/contact.dart';
 import 'package:flutter_app/contact_list/contact_detail_screen.dart';
 import 'package:flutter_app/contact_list/contact_repo.dart';
-import 'package:flutter_app/utility/strings.dart';
 
 class ContactListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ContactRepo bloc = BlocProvider.of<ContactRepo>(context);
     bloc.fetchContact();
-    return Scaffold(
-        /*appBar: AppBar(
-          title: Text(Strings.CONTACTS),
-        ),*/
-        body: StreamBuilder<List<Contact>>(
-          stream: bloc.contactStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _getListItem(snapshot.data[index], context);
-                  });
-            } else if (snapshot.hasError) {
-              return const Center(
-                child: Text('No data present'),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        ));
+    return StreamBuilder<List<Contact>>(
+      stream: bloc.contactStream,
+      builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _getListItem(snapshot.data[index], context);
+              });
+        } else if (snapshot.hasError) {
+          return const Center(
+            child: Text('No data present'),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
   }
 
   Widget _getListItem(Contact contact, BuildContext context) {

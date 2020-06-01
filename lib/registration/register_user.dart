@@ -8,13 +8,16 @@ typedef onSaveForm = void Function(String);
 typedef onValidateForm = String Function(String);
 
 class RegisterUser extends StatefulWidget {
+  const RegisterUser({@required this.scaffoldKey});
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
   @override
   _RegisterUserState createState() => _RegisterUserState();
 }
 
 class _RegisterUserState extends State<RegisterUser> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final Map<String, dynamic> formData = <String, dynamic>{
     Constants.ARG_FIRST_NAME: null,
     Constants.ARG_LAST_NAME: null,
@@ -26,94 +29,90 @@ class _RegisterUserState extends State<RegisterUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        // resizeToAvoidBottomInset: false,
-       /* appBar: AppBar(
-          title: Text(Strings.REGISTER_USER),
-        ),*/
-        body: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  _getPolicyNumberField(
-                    (String value) {
-                      formData[Constants.ARG_POLICY_NUMBER] = value;
-                    },
-                  ),
-                  _getFormInputField(
-                    Strings.FIRST_NAME,
-                    (String value) {
-                      formData[Constants.ARG_FIRST_NAME] = value;
-                    },
-                    (String value) {
-                      return value.isEmpty ? Strings.ERR_FIRST_NAME : null;
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: _getFormInputField(
-                      Strings.LAST_NAME,
-                      (String value) {
-                        formData[Constants.ARG_LAST_NAME] = value;
-                      },
-                      (String value) {
-                        return value.isEmpty ? Strings.ERR_LAST_NAME : null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: _getFormInputField(
-                      Strings.ZIP_CODE,
-                      (String value) {
-                        formData[Constants.ARG_ZIP_CODE] = value;
-                      },
-                      (String value) {
-                        return value.isEmpty ? Strings.ERR_ZIP : null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding:const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: _getFormInputField(
-                      Strings.EMAIL,
-                      (String value) {
-                        formData[Constants.ARG_EMAIL] = value;
-                      },
-                      (String value) {
-                        if (value.isEmpty) {
-                          return Strings.EMPTY_EMAIL;
-                        } else {
-                          if (!EmailValidator.validate(value)) {
-                            return Strings.ERR_EMAIL;
-                          }
-                          return null;
-                        }
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                  ),
-                  _getDateOfBirthField(),
-                  RaisedButton(
-                    child: Text(Strings.REGISTER),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        _formKey.currentState.save();
-                        Navigator.pop(context);
-                      }
-                    },
-                  )
-                ],
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _getPolicyNumberField(
+                (String value) {
+                  formData[Constants.ARG_POLICY_NUMBER] = value;
+                },
               ),
-            ),
+              _getFormInputField(
+                Strings.FIRST_NAME,
+                (String value) {
+                  formData[Constants.ARG_FIRST_NAME] = value;
+                },
+                (String value) {
+                  return value.isEmpty ? Strings.ERR_FIRST_NAME : null;
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: _getFormInputField(
+                  Strings.LAST_NAME,
+                  (String value) {
+                    formData[Constants.ARG_LAST_NAME] = value;
+                  },
+                  (String value) {
+                    return value.isEmpty ? Strings.ERR_LAST_NAME : null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: _getFormInputField(
+                  Strings.ZIP_CODE,
+                  (String value) {
+                    formData[Constants.ARG_ZIP_CODE] = value;
+                  },
+                  (String value) {
+                    return value.isEmpty ? Strings.ERR_ZIP : null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: _getFormInputField(
+                  Strings.EMAIL,
+                  (String value) {
+                    formData[Constants.ARG_EMAIL] = value;
+                  },
+                  (String value) {
+                    if (value.isEmpty) {
+                      return Strings.EMPTY_EMAIL;
+                    } else {
+                      if (!EmailValidator.validate(value)) {
+                        return Strings.ERR_EMAIL;
+                      }
+                      return null;
+                    }
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                ),
+              ),
+              _getDateOfBirthField(),
+              RaisedButton(
+                child: Text(Strings.REGISTER),
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    _formKey.currentState.save();
+                    widget.scaffoldKey.currentState.showSnackBar(const SnackBar(
+                      content: Text('user registered'),
+                    ));
+                  }
+                },
+              )
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   String _getDOB() {

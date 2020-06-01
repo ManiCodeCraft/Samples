@@ -1,25 +1,22 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_app/bloc_provider.dart';
 import 'package:flutter_app/contact_list/contact_screen.dart';
 import 'package:flutter_app/drawer_bloc.dart';
 import 'package:flutter_app/drawer_layout.dart';
 import 'package:flutter_app/registration/register_user.dart';
 import 'package:flutter_app/save_pdf/save_data_repo.dart';
-import 'package:flutter_app/save_pdf/save_pdf_data.dart';
-import 'package:flutter_app/user.dart';
-import 'package:flutter_app/utility/constants.dart';
 import 'package:flutter_app/utility/strings.dart';
 
 class DashboardScreen extends StatelessWidget {
   final SaveDataRepo repo = SaveDataRepo();
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final DrawerBloc bloc = BlocProvider.of<DrawerBloc>(context);
     return Scaffold(
+      key: _scaffoldKey,
         appBar: AppBar(
           title: StreamBuilder<String>(
               stream: bloc.currentPageStream,
@@ -87,7 +84,7 @@ class DashboardScreen extends StatelessWidget {
             if (snapshot.hasData) {
               switch (snapshot.data) {
                 case Strings.REGISTER_USER:
-                  return RegisterUser();
+                  return RegisterUser(scaffoldKey: _scaffoldKey,);
                   break;
                 case Strings.CONTACTS:
                   return ContactListScreen();
@@ -108,7 +105,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
- /* Future<bool> _showAlert(BuildContext context) async {
+/* Future<bool> _showAlert(BuildContext context) async {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
