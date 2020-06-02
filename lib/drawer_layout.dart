@@ -39,13 +39,13 @@ class DrawerLayout extends StatelessWidget {
               final List<PolicyIdCard> idList =
                   await repo.getDbData('0401-27-2001-67006');
               if (idList.isNotEmpty) {
-              //  Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE,
-                //    arguments: idList.first);
-                bloc.setIdCard(idList.first);
-                bloc.updatePage(Strings.SAVE_PDF);
+                Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE,
+                    arguments: idList.first);
+              //  bloc.setIdCard(idList.first);
+               // bloc.updatePage(Strings.SAVE_PDF);
               } else {
                 if (await _showAlert(context)) {
-                  await _insertToDb(context, bloc);
+                  await _insertToDb(context/*, bloc*/);
                 }
               }
             },
@@ -141,7 +141,7 @@ class DrawerLayout extends StatelessWidget {
         });
   }
 
-  Future<void> _insertToDb(BuildContext context, DrawerBloc bloc) async {
+  Future<void> _insertToDb(BuildContext context/*, DrawerBloc bloc*/) async {
     final ByteData image = await rootBundle.load('images/logo.jpg');
     final String imageString = base64Encode(image.buffer.asUint8List());
     // print(imageString);
@@ -158,8 +158,8 @@ class DrawerLayout extends StatelessWidget {
         'NAIC #38342',
         imageString);
     await repo.insertToDb(idCard);
-    bloc.setIdCard(idCard);
-    bloc.updatePage(Strings.SAVE_PDF);
-    //Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE, arguments: idCard);
+//    bloc.setIdCard(idCard);
+//    bloc.updatePage(Strings.SAVE_PDF);
+    Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE, arguments: idCard);
   }
 }

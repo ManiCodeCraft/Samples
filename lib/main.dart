@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
                     DashboardScreen(),
                /* Constants.REGISTER_USER_ROUTE: (BuildContext context) =>
                     RegisterUser(),*/
-                /*Constants.SAVE_PDF_ROUTE: (BuildContext context) =>
-                    SaveDataScreen(),*/
+                Constants.SAVE_PDF_ROUTE: (BuildContext context) =>
+                    SaveDataScreen(),
                /* Constants.CONTACT_LIST_ROUTE: (BuildContext context) =>
                     ContactListScreen(),*/
               },

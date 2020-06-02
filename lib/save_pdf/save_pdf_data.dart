@@ -12,9 +12,9 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class SaveDataScreen extends StatefulWidget {
-  const SaveDataScreen({@required this.idCard});
+ // const SaveDataScreen({@required this.idCard});
 
-  final PolicyIdCard idCard;
+ // final PolicyIdCard idCard;
 
   @override
   _SaveDataState createState() => _SaveDataState();
@@ -54,7 +54,9 @@ class _SaveDataState extends State<SaveDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    pdfFile = constructFile(widget.idCard);
+    final PolicyIdCard idCard =
+    ModalRoute.of(context).settings.arguments as PolicyIdCard;
+    pdfFile = constructFile(idCard);
 
     return FutureBuilder<File>(
         future: pdfFile,

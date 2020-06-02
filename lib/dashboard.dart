@@ -87,7 +87,7 @@ class DashboardScreen extends StatelessWidget {
                 case Strings.REGISTER_USER:
                   return RegisterUser(scaffoldKey: _scaffoldKey,);
                   break;
-                case Strings.SAVE_PDF:
+                /*case Strings.SAVE_PDF:
                   if (bloc.idCard != null) {
                     return SaveDataScreen(
                       idCard: bloc.idCard,
@@ -95,7 +95,7 @@ class DashboardScreen extends StatelessWidget {
                   } else {
                     return _getDefaultLayout();
                   }
-                  break;
+                  break;*/
                 case Strings.CONTACTS:
                   return ContactListScreen();
                   break;
