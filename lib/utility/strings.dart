@@ -17,8 +17,8 @@ class Strings {
   static const String ERR_DOB = 'Select DOB';
   static const String SAVE_PDF = 'Save Pdf';
   static const String NO_DATA_PRESENT = 'No data present';
-  static const String FILE_DATA = 'File Data';
+  static const String ID_CARD = 'Id Card';
   static const String DASHBOARD = 'DashBoard';
   static const String CONTACTS = 'Contacts';
-  static const String CONTACT_DETAIL = "Contact Detail";
+  static const String CONTACT_DETAIL = 'Contact Detail';
 }

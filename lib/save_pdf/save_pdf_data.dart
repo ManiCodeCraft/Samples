@@ -5,16 +5,15 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/user.dart';
-import 'package:flutter_app/utility/strings.dart';
-import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
 
 class SaveDataScreen extends StatefulWidget {
- // const SaveDataScreen({@required this.idCard});
+  const SaveDataScreen({@required this.idCard});
 
- // final PolicyIdCard idCard;
+  final PolicyIdCard idCard;
 
   @override
   _SaveDataState createState() => _SaveDataState();
@@ -44,6 +43,12 @@ class _SaveDataState extends State<SaveDataScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    pdfFile = constructFile(widget.idCard);
+  }
+
+  @override
   void dispose() {
     pdfFile.then((File value) {
       value.delete();
@@ -54,30 +59,21 @@ class _SaveDataState extends State<SaveDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final PolicyIdCard idCard =
-    ModalRoute.of(context).settings.arguments as PolicyIdCard;
-    pdfFile = constructFile(idCard);
-
     return FutureBuilder<File>(
         future: pdfFile,
         builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
           if (snapshot.hasData) {
-            return PDFViewerScaffold(
-              appBar: AppBar(
-                title: Text(Strings.FILE_DATA),
+            return Container(
+              child: PdfViewer(
+                filePath: snapshot.data.path,
               ),
-              path: snapshot.data.path,
             );
           } else {
-            return Scaffold(
-                /*appBar: AppBar(
-                  title: Text(Strings.SAVE_PDF),
-                ),*/
-                body: Container(
+            return Container(
               child: const Center(
                 child: CircularProgressIndicator(),
               ),
-            ));
+            );
           }
         });
   }

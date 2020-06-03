@@ -29,6 +29,9 @@ class DashboardScreen extends StatelessWidget {
                     case Strings.CONTACTS:
                       return Text(snapshot.data);
                       break;
+                    case Strings.SAVE_PDF:
+                      return Text(Strings.ID_CARD);
+                      break;
                     default:
                       return Text(Strings.DASHBOARD);
                   }
@@ -37,46 +40,6 @@ class DashboardScreen extends StatelessWidget {
                 }
               }),
         ),
-        /*drawer: Drawer(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                  child: Text(Strings.REGISTER_USER),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushNamed(context, Constants.REGISTER_USER_ROUTE);
-                  },
-                ),
-                RaisedButton(
-                  child: Text(Strings.SAVE_PDF),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    final List<PolicyIdCard> idList =
-                        await repo.getDbData('0401-27-2001-67006');
-                    if (idList.isNotEmpty) {
-                      Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE,
-                          arguments: idList.first);
-                    } else {
-                      if (await _showAlert(context)) {
-                        await _insertToDb(context);
-                      }
-                    }
-                  },
-                ),
-                RaisedButton(
-                  child: Text(Strings.CONTACTS),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushNamed(context, Constants.CONTACT_LIST_ROUTE);
-                  },
-                )
-              ],
-            ),
-          ),
-        ),*/
         drawer: DrawerLayout(),
         body: StreamBuilder<String>(
           stream: bloc.currentPageStream,
@@ -87,7 +50,7 @@ class DashboardScreen extends StatelessWidget {
                 case Strings.REGISTER_USER:
                   return RegisterUser(scaffoldKey: _scaffoldKey,);
                   break;
-                /*case Strings.SAVE_PDF:
+                case Strings.SAVE_PDF:
                   if (bloc.idCard != null) {
                     return SaveDataScreen(
                       idCard: bloc.idCard,
@@ -95,7 +58,7 @@ class DashboardScreen extends StatelessWidget {
                   } else {
                     return _getDefaultLayout();
                   }
-                  break;*/
+                  break;
                 case Strings.CONTACTS:
                   return ContactListScreen();
                   break;

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/save_pdf/save_data_repo.dart';
 import 'package:flutter_app/user.dart';
-import 'package:flutter_app/utility/constants.dart';
 import 'package:flutter_app/utility/strings.dart';
 
 import 'bloc_provider.dart';
@@ -29,31 +28,25 @@ class DrawerLayout extends StatelessWidget {
           ),
           _getDrawerItem(Icons.account_box, Strings.REGISTER_USER, () {
             Navigator.of(context).pop();
-           bloc.updatePage(Strings.REGISTER_USER);
-          }),
-          _getDrawerItem(
-            Icons.picture_as_pdf,
-            Strings.SAVE_PDF,
-            () async {
-              Navigator.of(context).pop();
-              final List<PolicyIdCard> idList =
-                  await repo.getDbData('0401-27-2001-67006');
-              if (idList.isNotEmpty) {
-                Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE,
-                    arguments: idList.first);
-              //  bloc.setIdCard(idList.first);
-               // bloc.updatePage(Strings.SAVE_PDF);
-              } else {
-                if (await _showAlert(context)) {
-                  await _insertToDb(context/*, bloc*/);
-                }
+            bloc.updatePage(Strings.REGISTER_USER);
+          }, bloc.currentPage == Strings.REGISTER_USER),
+          _getDrawerItem(Icons.picture_as_pdf, Strings.SAVE_PDF, () async {
+            Navigator.of(context).pop();
+            final List<PolicyIdCard> idList =
+                await repo.getDbData('0401-27-2001-67006');
+            if (idList.isNotEmpty) {
+              bloc.setIdCard(idList.first);
+              bloc.updatePage(Strings.SAVE_PDF);
+            } else {
+              if (await _showAlert(context)) {
+                await _insertToDb(context, bloc);
               }
-            },
-          ),
+            }
+          }, bloc.currentPage == Strings.SAVE_PDF),
           _getDrawerItem(Icons.contacts, Strings.CONTACTS, () {
             Navigator.of(context).pop();
             bloc.updatePage(Strings.CONTACTS);
-          }),
+          }, bloc.currentPage == Strings.CONTACTS),
         ],
       ),
     );
@@ -79,11 +72,6 @@ class DrawerLayout extends StatelessWidget {
                         ),
                       )),
                 ),
-                /*Image.asset(
-                  'images/mani_pic.png',
-                  height: 48,
-                  width: 48,
-                ),*/
                 const SizedBox(
                   height: 8,
                 ),
@@ -98,22 +86,36 @@ class DrawerLayout extends StatelessWidget {
         ]);
   }
 
-  Widget _getDrawerItem(IconData icon, String title, DrawerItemTap onTap) {
+  Widget _getDrawerItem(
+      IconData icon, String title, DrawerItemTap onTap, bool isHighlighted) {
     return GestureDetector(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 16, 0, 16),
         child: Row(
           children: <Widget>[
-            Icon(icon),
+            Icon(
+              icon,
+              color: _getColor(isHighlighted),
+            ),
             const SizedBox(
               width: 24,
             ),
-            Text(title)
+            Text(
+              title,
+              style: TextStyle(
+                  color: _getColor(isHighlighted),
+                  fontWeight:
+                      isHighlighted ? FontWeight.w600 : FontWeight.w400),
+            )
           ],
         ),
       ),
       onTap: onTap,
     );
+  }
+
+  Color _getColor(bool isHighlighted) {
+    return isHighlighted ? Colors.black : Colors.black38;
   }
 
   Future<bool> _showAlert(BuildContext context) async {
@@ -141,7 +143,7 @@ class DrawerLayout extends StatelessWidget {
         });
   }
 
-  Future<void> _insertToDb(BuildContext context/*, DrawerBloc bloc*/) async {
+  Future<void> _insertToDb(BuildContext context, DrawerBloc bloc) async {
     final ByteData image = await rootBundle.load('images/logo.jpg');
     final String imageString = base64Encode(image.buffer.asUint8List());
     // print(imageString);
@@ -158,8 +160,7 @@ class DrawerLayout extends StatelessWidget {
         'NAIC #38342',
         imageString);
     await repo.insertToDb(idCard);
-//    bloc.setIdCard(idCard);
-//    bloc.updatePage(Strings.SAVE_PDF);
-    Navigator.pushNamed(context, Constants.SAVE_PDF_ROUTE, arguments: idCard);
+    bloc.setIdCard(idCard);
+    bloc.updatePage(Strings.SAVE_PDF);
   }
 }
