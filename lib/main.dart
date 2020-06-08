@@ -1,14 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc_provider.dart';
 import 'package:flutter_app/contact_list/contact_repo.dart';
-import 'package:flutter_app/contact_list/contact_screen.dart';
 import 'package:flutter_app/dashboard.dart';
 import 'package:flutter_app/drawer_bloc.dart';
-import 'package:flutter_app/registration/register_user.dart';
-import 'package:flutter_app/save_pdf/save_pdf_data.dart';
 import 'package:flutter_app/utility/constants.dart';
 
 void main() {
+  Timer.periodic(const Duration(seconds: 10), (Timer timer) {
+    print('triggered');
+  });
   return runApp(MyApp());
 }
 
@@ -29,11 +31,11 @@ class MyApp extends StatelessWidget {
               routes: <String, WidgetBuilder>{
                 Constants.HOME_ROUTE: (BuildContext context) =>
                     DashboardScreen(),
-               /* Constants.REGISTER_USER_ROUTE: (BuildContext context) =>
+                /* Constants.REGISTER_USER_ROUTE: (BuildContext context) =>
                     RegisterUser(),*/
-               /* Constants.SAVE_PDF_ROUTE: (BuildContext context) =>
+                /* Constants.SAVE_PDF_ROUTE: (BuildContext context) =>
                     SaveDataScreen(),*/
-               /* Constants.CONTACT_LIST_ROUTE: (BuildContext context) =>
+                /* Constants.CONTACT_LIST_ROUTE: (BuildContext context) =>
                     ContactListScreen(),*/
               },
             )));
