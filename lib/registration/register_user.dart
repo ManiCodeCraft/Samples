@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/utility/constants.dart';
@@ -87,10 +86,10 @@ class _RegisterUserState extends State<RegisterUser> {
                     if (value.isEmpty) {
                       return Strings.EMPTY_EMAIL;
                     } else {
-                      if (!EmailValidator.validate(value)) {
-                        return Strings.ERR_EMAIL;
-                      }
-                      return null;
+                      final bool regExp = RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          .hasMatch(value);
+                      return !regExp ? Strings.ERR_EMAIL : null;
                     }
                   },
                   keyboardType: TextInputType.emailAddress,

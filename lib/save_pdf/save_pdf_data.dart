@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_app/user.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -25,15 +24,15 @@ class _SaveDataState extends State<SaveDataScreen> {
 
   Future<File> constructFile(PolicyIdCard user) async {
     final pw.Document doc = pw.Document();
-    final ByteData data = await rootBundle.load('fonts/Roboto-Regular.ttf');
+//    final ByteData data = await rootBundle.load('fonts/Roboto-Regular.ttf');
     final String dir = (await getTemporaryDirectory()).path;
     logoImage = File('$dir/tempImage.jpg');
     logoImage.writeAsBytesSync(base64Decode(user.logoString));
-    final pw.Font f = pw.Font.ttf(data);
+//    final pw.Font f = pw.Font.ttf(data);
     doc.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-          return buildPdf(context, user, doc.document, f);
+          return buildPdf(context, user, doc.document);
         }));
 
     final File temp = File('$dir/temp1.pdf');
@@ -80,8 +79,7 @@ class _SaveDataState extends State<SaveDataScreen> {
         });
   }
 
-  pw.Widget buildPdf(
-      pw.Context context, PolicyIdCard user, PdfDocument pdf, pw.Font font) {
+  pw.Widget buildPdf(pw.Context context, PolicyIdCard user, PdfDocument pdf) {
     print(user.logoString);
     return pw.Container(
       child: pw.Column(children: <pw.Widget>[
@@ -96,7 +94,7 @@ class _SaveDataState extends State<SaveDataScreen> {
                   color: PdfColors.black)),
           child: pw.Column(
             children: <pw.Widget>[
-              _getHeader(pdf, font, user),
+              _getHeader(pdf, user),
               pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
@@ -106,15 +104,14 @@ class _SaveDataState extends State<SaveDataScreen> {
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
-                            'POLICY NUMBER', user.policyNumber, font),
+                            'POLICY NUMBER', user.policyNumber),
                       ),
                       pw.Flexible(
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
                             'EFFECTIVE / EXPIRATION DATES',
-                            '${user.effectiveDate}  ${user.expirationDate}',
-                            font),
+                            '${user.effectiveDate}  ${user.expirationDate}'),
                       ),
                     ],
                   ),
@@ -123,23 +120,19 @@ class _SaveDataState extends State<SaveDataScreen> {
                       pw.Flexible(
                         fit: pw.FlexFit.tight,
                         flex: 1,
-                        child: _getPolicyDataLayout(
-                            'YEAR/MAKE/MODEL',
-                            '${user.year.toString()} ${user.makeCompany} ${user.model}',
-                            font),
+                        child: _getPolicyDataLayout('YEAR/MAKE/MODEL',
+                            '${user.year.toString()} ${user.makeCompany} ${user.model}'),
                       ),
                       pw.Flexible(
                         fit: pw.FlexFit.tight,
                         flex: 1,
                         child: _getPolicyDataLayout(
-                            'VEHICLE IDENTIFICATION NUMBER',
-                            user.vehicleId,
-                            font),
+                            'VEHICLE IDENTIFICATION NUMBER', user.vehicleId),
                       ),
                     ],
                   ),
                   _getPolicyDataLayout(
-                      'NAMED INSURANCE', '${user.name}\n${user.address}', font)
+                      'NAMED INSURANCE', '${user.name}\n${user.address}')
                 ],
               ),
               pw.SizedBox(
@@ -191,7 +184,7 @@ class _SaveDataState extends State<SaveDataScreen> {
     );
   }
 
-  pw.Widget _getHeader(PdfDocument pdf, pw.Font font, PolicyIdCard user) {
+  pw.Widget _getHeader(PdfDocument pdf, PolicyIdCard user) {
     return pw.Row(
       children: <pw.Widget>[
         pw.Image(PdfImage.file(pdf, bytes: logoImage.readAsBytesSync()),
@@ -248,7 +241,7 @@ class _SaveDataState extends State<SaveDataScreen> {
     );
   }
 
-  pw.Widget _getPolicyDataLayout(String header, String value, pw.Font font) {
+  pw.Widget _getPolicyDataLayout(String header, String value) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: <pw.Widget>[
