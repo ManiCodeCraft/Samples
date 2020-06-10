@@ -8,7 +8,7 @@ import 'package:flutter_app/user.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class SaveDataScreen extends StatefulWidget {
   const SaveDataScreen({@required this.idCard});
@@ -63,9 +63,11 @@ class _SaveDataState extends State<SaveDataScreen> {
         future: pdfFile,
         builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
           if (snapshot.hasData) {
+            print(snapshot.data.path);
             return Container(
-              child: PdfViewer(
-                filePath: snapshot.data.path,
+              child: WebView(
+                initialUrl: 'file://${snapshot.data.path}',
+                javascriptMode: JavascriptMode.unrestricted,
               ),
             );
           } else {
